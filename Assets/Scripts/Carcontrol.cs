@@ -23,18 +23,9 @@ public class Carcontrol : MonoBehaviour
    public AudioSource hitsound;
 
     public float rotatevalue;
-    public float explosionpower;
-    bool canmove = false;
-    // Start is called before the first frame update
-    void Start()
-    {
-        Invoke("delaystarting",3f);
-    }
-    void delaystarting() 
-    {
-        canmove = true;
-    }
-    // Update is called once per frame
+   public bool canmove = false;
+
+
     void FixedUpdate()
     {
         if (canmove==false)
@@ -45,12 +36,10 @@ public class Carcontrol : MonoBehaviour
         rot.z = Mathf.Clamp(rot.z,min,max);
         wheelobj.transform.Rotate(0,0, Mathf.Clamp(  -Input.GetAxis("Horizontal") * rotatespeed/2,min,max));
 
-        //rotatevalue += -Input.GetAxis("Horizontal") * wheelrotatespeed;
-        //rotatevalue = Mathf.Clamp(rotatevalue,min,max);
-        //wheelobj.transform.localRotation = Quaternion.Euler(34, 0, rotatevalue );
-        
-        car.AddRelativeForce(0,0, Input.GetAxis("Vertical") * speed ,fmodemove);
-        car.AddRelativeTorque(0, Input.GetAxis("Horizontal") * rotatespeed, 0,fmoderotate);
+
+        //Input.GetAxis("Vertical")
+        car.AddRelativeForce(0,0, speed ,fmodemove);
+        car.AddRelativeTorque(0, (int)Input.GetAxis("Horizontal") * rotatespeed, 0,fmoderotate);
         if (Input.GetKeyDown(KeyCode.Space))
         {
             car.gameObject.transform.position = new Vector3(0,0,0);
@@ -64,14 +53,16 @@ public class Carcontrol : MonoBehaviour
     {
         if (collision.gameObject.layer==LayerMask.NameToLayer("carcollision"))
         {
+            float speeddifference = speed-collision.gameObject.GetComponent<Aicontrol>().currentspeed;
             lasthitcarindex = collision.gameObject.GetComponent<Aicontrol>().carindex;
             hitsound.PlayOneShot(hitsound.clip);
+
             Vector3 direction = collision.transform.position - this.transform.position;
 
-            car.AddExplosionForce(explosionpower, collision.transform.position, 10f, 0, ForceMode.Impulse);
-
-            collision.gameObject.GetComponent<Rigidbody>().
-            AddExplosionForce(explosionpower, this.transform.position, 10f, 0, ForceMode.Impulse);
+           
+            StartCoroutine(callcollisionfunc(speeddifference,collision.gameObject));
+            //gm.collisioncalculate(speeddifference,collision.gameObject,car);
+            speed -= 5;
 
         }
         else if (collision.gameObject.layer==LayerMask.NameToLayer("outside"))
@@ -85,16 +76,15 @@ public class Carcontrol : MonoBehaviour
             this.enabled = false;
         }
 
-        //Camera.main.transform.LookAt(direction);
     }
 
-    /*
-     * Make a cube. Put a low friction material on it. Add a force in the forwards direction. To turn add a force in the left/right direction at the front end of the cube. Instant car.
+    IEnumerator callcollisionfunc( float speeddifference,GameObject collision) 
+    {
+        yield return new WaitForSeconds(Random.Range(0,0.22f));
+        gm.collisioncalculate(speeddifference, collision.gameObject, car);
 
-Gears are all about the ratio of force to speed. I would create an animation curves for each car and simply read off the values. At low gears you can provide a high force at low speeds, but the force drops off as the speed increases. At high gears you get the opposite behaviour.
 
-Its by no means a physically accurate representation of a car. But it will do pretty well as a simple model.
-     * 
-     */
+    }
+
 
 }

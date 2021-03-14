@@ -11,6 +11,12 @@ public class Gamemanager : MonoBehaviour
     public GameObject[] cars;
     public bool[] alivecars;
 
+    public float carspeed;
+    public float carsrotatespeed;
+    public float explosionpower;
+
+
+
     public TMP_Text fpstext;
     public TMP_Text feed;
     public TMP_Text countdown;
@@ -24,29 +30,31 @@ public class Gamemanager : MonoBehaviour
         GameObject spawnmanager= new GameObject();
         for (int i = 0; i < carcount; i++)
         {
-            //GameObject enemycar = Instantiate(enemycarobj,new Vector3(Random.Range(-12,12),0.1f, Random.Range(-12, 12)),Quaternion.identity);
             GameObject enemycar = Instantiate(enemycarobj,spawnmanager.transform.forward*12f,Quaternion.identity);
+            enemycar.gameObject.name = "enemy_Car"+i;
             enemycar.transform.LookAt(Vector3.zero);
 
             enemycar.GetComponent<Aicontrol>().gm = this;
             enemycar.GetComponent<Aicontrol>().carindex = i;
+            enemycar.GetComponent<Aicontrol>().speed = carspeed;
+            enemycar.GetComponent<Aicontrol>().rotatespeed = carsrotatespeed;
+
             cars[i] = enemycar;
             alivecars[i] = true;
-            angletospawn += 360 / cars.Length+1;
+            angletospawn += 360f / cars.Length;
             spawnmanager.transform.rotation=Quaternion.Euler(0,angletospawn,0);
         }
         cars[carcount] = playercar;
         playercar.GetComponent<Carcontrol>().carindex = carcount;
+        playercar.GetComponent<Carcontrol>().speed = carspeed;
+        playercar.GetComponent<Carcontrol>().rotatespeed = carsrotatespeed;
+
         alivecars[carcount] = true;
         playercar.transform.position = spawnmanager.transform.forward * 12f;
         playercar.transform.LookAt(Vector3.zero);
         StartCoroutine(delay(3f));
     }
 
-    void Update()
-    {
-        
-    }
     IEnumerator delay(float t) 
     {
         currentvalue = t;
@@ -57,7 +65,11 @@ public class Gamemanager : MonoBehaviour
             currentvalue--;
         }
         countdown.text = "";
-
+        playercar.GetComponent<Carcontrol>().canmove = true;
+        for (int i = 0; i < cars.Length-1; i++)
+        {
+            cars[i].GetComponent<Aicontrol>().canmove = true;
+        }
         yield return new WaitForSeconds(3);
     }
     
@@ -66,6 +78,8 @@ public class Gamemanager : MonoBehaviour
         int fps = (int)(1f / Time.unscaledDeltaTime);
         fpstext.text = fps.ToString();
     }
+
+
     public GameObject getnewtarget(int carindex)
     {
         List<GameObject> alives = new List<GameObject>();
@@ -76,21 +90,8 @@ public class Gamemanager : MonoBehaviour
                 alives.Add(cars[i]);
             }
         }
-
-
         int newtargetindex = 0;
-
-
         newtargetindex = Random.Range(0, alives.Count);
-          /*
-        int whileender = 0;
-
-        while (newtargetindex == carindex || alivecars[newtargetindex] == false&&whileender>)
-        {
-        newtargetindex = Random.Range(0, alives.Count + 1);
-            whileender++;
-        }
-           */
         return alives[newtargetindex];
     }
         
@@ -98,14 +99,9 @@ public class Gamemanager : MonoBehaviour
     public void carkilled(int killedcarindex,int whokilled) 
     {
         alivecars[killedcarindex] = false;
-        //print(cars[whokilled].gameObject.name+" killed"+cars[killedcarindex].gameObject.name);
         feed.text += "" + whokilled + ". car killed " + killedcarindex+". car \n";
-        if (whokilled!=carcount)
-        {
-            //cars[whokilled].GetComponent<Aicontrol>().target = getnewtarget(whokilled);
-        }
-         
-        //chek if its the last car
+
+       
         int destroyedcarcount = 0;
         int alivecarindex = 0;
         for (int i = 0; i < cars.Length; i++)
@@ -123,6 +119,28 @@ public class Gamemanager : MonoBehaviour
             this.enabled = false;
         }
 
+    }
+
+    public void collisioncalculate(float speeddifference,GameObject collisionobj,Rigidbody r) 
+    {
+        float multiplier = 0;
+        if (speeddifference > 0)
+        {
+            multiplier = 0;
+        }
+        else if (speeddifference == 0)
+        {
+            multiplier = Random.Range(0f, 2f);
+        }
+        else
+        {
+            multiplier = 1;
+        }
+        r.AddExplosionForce(explosionpower / 2 * multiplier, collisionobj.transform.position, 10f, 0, ForceMode.Impulse);
+
+
+        collisionobj.gameObject.GetComponent<Rigidbody>().
+        AddExplosionForce(explosionpower, r.transform.position, 10f, 0, ForceMode.Impulse);
     }
 
 }

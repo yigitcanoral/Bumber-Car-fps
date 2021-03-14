@@ -17,25 +17,12 @@ public class Aicontrol : MonoBehaviour
 
 
     public AudioSource hitsound;
-    public float explosionpower;
 
 
 
-    bool canmove;
-    // Start is called before the first frame update
-    void Start()
-    {
-        Invoke("findfirsttarget", 3f);
-    }
+   public bool canmove;
+     public float currentspeed;
 
-    void findfirsttarget() 
-    {
-        canmove = true;
-
-       // target = gm.getnewtarget(carindex);
-    }
-
-    // Update is called once per frame
     void FixedUpdate()
     {
         if (canmove==false)
@@ -44,31 +31,36 @@ public class Aicontrol : MonoBehaviour
         }
         if (target.gameObject != null)
         {
-            Vector3 directiontotarget = target.transform.position - this.transform.position;
+            currentspeed += Time.deltaTime*4;
 
+            currentspeed = Mathf.Clamp(currentspeed,12,speed);
+            Vector3 directiontotarget = target.transform.position - this.transform.position;
             Vector3 perp = Vector3.Cross(this.transform.forward, directiontotarget);
             float dir = Vector3.Dot(perp, Vector3.up);
 
+            
+            print(dir);
             if (dir > 0f)
             {
+                r.AddRelativeTorque(0, rotatespeed, 0, fm);
+
             }
             else if (dir < 0f)
             {
+                r.AddRelativeTorque(0, -rotatespeed, 0, fm);
+
             }
             else
             {
             }
 
-
-            r.AddRelativeTorque(0, dir * rotatespeed, 0, fm);
-            r.AddRelativeForce(0, 0, speed, fm);
+            //r.AddRelativeTorque(0, dir * rotatespeed, 0, fm);
             
+            r.AddRelativeForce(0, 0, currentspeed, fm);
 
         }
         else
         {
-            //Invoke("findfirsttarget", 1f);
-           // print("else working....");
            target= gm.getnewtarget(carindex); 
         }
     }
@@ -82,25 +74,23 @@ public class Aicontrol : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("carcollision"))
         {
+            float speeddifference =0;
             if (collision.gameObject.tag=="Player")
             {
-                lasttouchcarindex = 7;
-                print("player hit");
+                lasttouchcarindex = collision.gameObject.GetComponent<Carcontrol>().carindex;
+                speeddifference = currentspeed - collision.gameObject.GetComponent<Carcontrol>().speed;// change to current speed
             }
             else
             {
                 lasttouchcarindex = collision.gameObject.GetComponent<Aicontrol>().carindex;
-
+                speeddifference = currentspeed - collision.gameObject.GetComponent<Aicontrol>().currentspeed;
             }
             hitsound.PlayOneShot(hitsound.clip);
-            Vector3 direction = collision.transform.position - this.transform.position;
+            StartCoroutine(callcollisionfunc(speeddifference, collision.gameObject));
 
-            r.AddExplosionForce(explosionpower, collision.transform.position, 10f, 0, ForceMode.Impulse);
+            //gm.collisioncalculate(speeddifference,collision.gameObject,r);
+            currentspeed -= 5;
 
-            collision.gameObject.GetComponent<Rigidbody>().
-            AddExplosionForce(explosionpower, this.transform.position, 10f, 0, ForceMode.Impulse);
-
-            //Camera.main.transform.LookAt(direction);
         }
         else if (collision.gameObject.layer== LayerMask.NameToLayer("outside"))
         {
@@ -113,7 +103,13 @@ public class Aicontrol : MonoBehaviour
 
 
     }
+    IEnumerator callcollisionfunc(float speeddifference, GameObject collision)
+    {
+        yield return new WaitForSeconds(Random.Range(0, 0.22f));
+        gm.collisioncalculate(speeddifference, collision.gameObject, r);
 
+
+    }
 
 
 
