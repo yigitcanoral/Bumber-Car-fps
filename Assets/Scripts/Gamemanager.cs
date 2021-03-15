@@ -28,7 +28,7 @@ public class Gamemanager : MonoBehaviour
         if (StartWithRandomCarCount==true)
         {
             carcount = Random.Range(1,8);
-            feed.text = "Random enemy count enabled, spawned" + carcount + "enemy car \n";
+            feed.text = "Random enemy count enabled, spawned" + carcount + "enemy car. \n";
         }
         cars = new GameObject[carcount+1];
         alivecars = new bool[carcount+1];
@@ -161,7 +161,7 @@ public class Gamemanager : MonoBehaviour
         }
         else if (speeddifference == 0)
         {
-            multiplier = Random.Range(0f, 1.2f);  //2
+            multiplier = Random.Range(1f, 1.2f);  //2
         }
         else
         {
@@ -192,5 +192,9 @@ public class Gamemanager : MonoBehaviour
     {
         SceneManager.LoadScene("SampleScene");
     }
+
+
+
+  
 
 }

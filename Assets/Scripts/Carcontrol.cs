@@ -20,8 +20,7 @@ public class Carcontrol : MonoBehaviour
     public GameObject wheelobj;
 
     public float wheelrotatespeed;
-    public float min;
-    public float max;
+    public float maxwheelangle;
    public AudioSource hitsound;
 
     public float rotatevalue;
@@ -60,12 +59,11 @@ public class Carcontrol : MonoBehaviour
         currentspeed += Time.deltaTime * 4;
         currentspeed = Mathf.Clamp(currentspeed,12,speed);
 
-        Vector3 rot = transform.localRotation.eulerAngles;
-        rot.z = Mathf.Clamp(rot.z,min,max);
-        wheelobj.transform.Rotate(0,0, Mathf.Clamp(  axis * rotatespeed/2,min,max));
+        wheelobj.transform.localRotation=Quaternion.Euler(0,0, Mathf.Clamp(  -axis * wheelrotatespeed*10, -maxwheelangle, maxwheelangle));
+        // wheelobj.transform.Rotate(0, 0, Mathf.Clamp(-Input.GetAxis("Horizontal") * rotatespeed, min, max));
 
+        Camera.main.fieldOfView = Mathf.Clamp(55+currentspeed,55,70);
 
-        
         car.AddRelativeForce(0,0, currentspeed ,fmodemove);
         car.transform.RotateAround(this.transform.position,Vector3.up, Input.GetAxis("Horizontal") * rotatespeed);
         car.transform.RotateAround(this.transform.position, Vector3.up, axis * rotatespeed);
@@ -97,8 +95,7 @@ public class Carcontrol : MonoBehaviour
             StartCoroutine(cameraeffect(Camera.main.transform.localPosition+ direction,false,0.3f));
            
             StartCoroutine(callcollisionfunc(speeddifference,collision.gameObject));
-            //gm.collisioncalculate(speeddifference,collision.gameObject,car);
-            currentspeed -= 5;
+            
 
         }
         else if (collision.gameObject.layer==LayerMask.NameToLayer("outside"))
@@ -117,7 +114,7 @@ public class Carcontrol : MonoBehaviour
     {
         yield return new WaitForSeconds(Random.Range(0,0.1f));
         gm.collisioncalculate(speeddifference, collision.gameObject, car);
-
+        currentspeed -= 10;
 
     }
     IEnumerator cameraeffect(Vector3 dir,bool onlyonce,float timelength)
@@ -128,7 +125,7 @@ public class Carcontrol : MonoBehaviour
 
         while (Time.time < starttime+ timelength)
         {
-            Camera.main.transform.localPosition = Vector3.Lerp(Camera.main.transform.localPosition,dir,(Time.time-starttime)/ timelength);
+            Camera.main.transform.localPosition = Vector3.Slerp(Camera.main.transform.localPosition,dir,(Time.time-starttime)/ timelength);
             yield return null;
         }
         Camera.main.transform.localPosition = dir;

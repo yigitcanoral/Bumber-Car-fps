@@ -573,7 +573,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 9d01521bddaacc34c82cc910d4992a52, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.567
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -688,7 +688,6 @@ MonoBehaviour:
   fm: 0
   lasttouchcarindex: 0
   hitsound: {fileID: 2029816932}
-  explosionpower: 4
   canmove: 0
   currentspeed: 0
 --- !u!1001 &5439676937353712311

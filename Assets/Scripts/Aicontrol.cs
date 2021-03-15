@@ -93,7 +93,7 @@ public class Aicontrol : MonoBehaviour
             StartCoroutine(callcollisionfunc(speeddifference, collision.gameObject));
 
             //gm.collisioncalculate(speeddifference,collision.gameObject,r);
-            currentspeed -= 5;
+            
 
         }
         else if (collision.gameObject.layer== LayerMask.NameToLayer("outside"))
@@ -111,6 +111,7 @@ public class Aicontrol : MonoBehaviour
     {
         yield return new WaitForSeconds(Random.Range(0, 0.1f));
         gm.collisioncalculate(speeddifference, collision.gameObject, r);
+        currentspeed -= 10;
 
 
     }

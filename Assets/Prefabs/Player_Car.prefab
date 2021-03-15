@@ -559,7 +559,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 9d01521bddaacc34c82cc910d4992a52, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.622
+  m_Volume: 0.271
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -612,7 +612,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -666,6 +666,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gm: {fileID: 0}
   speed: 14
+  currentspeed: 0
   fmodemove: 0
   rotatespeed: 10
   fmoderotate: 0
@@ -679,7 +680,8 @@ MonoBehaviour:
   max: 350
   hitsound: {fileID: 919132147567135725}
   rotatevalue: 0
-  explosionpower: 4
+  canmove: 0
+  axis: 0
 --- !u!64 &918333450
 MeshCollider:
   m_ObjectHideFlags: 0

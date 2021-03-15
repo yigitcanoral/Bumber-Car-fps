@@ -786,89 +786,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 2438385698062089593, guid: 8f0a4e7cc49d2224eb383de9d3b0a61e, type: 3}
---- !u!1 &903633652
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 903633655}
-  - component: {fileID: 903633654}
-  - component: {fileID: 903633653}
-  m_Layer: 0
-  m_Name: Camera
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!81 &903633653
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 903633652}
-  m_Enabled: 1
---- !u!20 &903633654
-Camera:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 903633652}
-  m_Enabled: 1
-  serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
-  m_projectionMatrixMode: 1
-  m_GateFitMode: 2
-  m_FOVAxisMode: 0
-  m_SensorSize: {x: 36, y: 24}
-  m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
-  m_NormalizedViewPortRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 60
-  orthographic: 0
-  orthographic size: 5
-  m_Depth: 0
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
-  m_TargetDisplay: 0
-  m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
-  m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
-  m_StereoConvergence: 10
-  m_StereoSeparation: 0.022
---- !u!4 &903633655
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 903633652}
-  m_LocalRotation: {x: 0.4415005, y: -0.22926636, z: 0.117787324, w: 0.85944194}
-  m_LocalPosition: {x: 10.4, y: 20.1, z: -17.6}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 54.38, y: -29.872, z: 0.002}
 --- !u!1001 &930464598
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2002,7 +1919,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2032297956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2016,7 +1933,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playercar: {fileID: 771108175}
-  carcount: 0
+  carcount: 7
   StartWithRandomCarCount: 0
   enemycarobj: {fileID: 9051356884913950580, guid: 33a9c2e112ab26b489598edae5d88d55,
     type: 3}
@@ -2049,15 +1966,39 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 963194227, guid: 3ef97b422bb1d4b41841ae41618930dc, type: 3}
+      propertyPath: field of view
+      value: 55
+      objectReference: {fileID: 0}
     - target: {fileID: 919132147567135724, guid: 3ef97b422bb1d4b41841ae41618930dc,
         type: 3}
       propertyPath: gm
       value: 
       objectReference: {fileID: 2032297956}
+    - target: {fileID: 919132147567135724, guid: 3ef97b422bb1d4b41841ae41618930dc,
+        type: 3}
+      propertyPath: max
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132147567135724, guid: 3ef97b422bb1d4b41841ae41618930dc,
+        type: 3}
+      propertyPath: min
+      value: -50
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132147567135724, guid: 3ef97b422bb1d4b41841ae41618930dc,
+        type: 3}
+      propertyPath: maxwheelangle
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132147567135724, guid: 3ef97b422bb1d4b41841ae41618930dc,
+        type: 3}
+      propertyPath: wheelrotatespeed
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 5829298681904560111, guid: 3ef97b422bb1d4b41841ae41618930dc,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5829298681904560111, guid: 3ef97b422bb1d4b41841ae41618930dc,
         type: 3}
