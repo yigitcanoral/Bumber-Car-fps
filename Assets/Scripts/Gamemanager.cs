@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
                   
 public class Gamemanager : MonoBehaviour
 {
     public GameObject playercar;
     public int carcount;
+    public bool StartWithRandomCarCount;
     public GameObject enemycarobj;
     public GameObject[] cars;
     public bool[] alivecars;
@@ -23,6 +25,11 @@ public class Gamemanager : MonoBehaviour
     float currentvalue;
     void Start()
     {
+        if (StartWithRandomCarCount==true)
+        {
+            carcount = Random.Range(1,8);
+            feed.text = "Random enemy count enabled, spawned" + carcount + "enemy car \n";
+        }
         cars = new GameObject[carcount+1];
         alivecars = new bool[carcount+1];
         InvokeRepeating("checkfps", 0.2f,0.2f);
@@ -99,9 +106,24 @@ public class Gamemanager : MonoBehaviour
     public void carkilled(int killedcarindex,int whokilled) 
     {
         alivecars[killedcarindex] = false;
-        feed.text += "" + whokilled + ". car killed " + killedcarindex+". car \n";
 
-       
+        if (killedcarindex == carcount)
+        {
+            print("player killed");
+            feed.text += "" + whokilled + ". car killed you    \n";
+        }
+        else if (whokilled!=carcount)
+        {
+            feed.text += "" + whokilled + ". car killed " + killedcarindex + ". car \n";
+
+        }
+        else if(whokilled==carcount)
+        {
+        feed.text += "You killed " + killedcarindex+". car \n";
+        }
+        
+
+
         int destroyedcarcount = 0;
         int alivecarindex = 0;
         for (int i = 0; i < cars.Length; i++)
@@ -114,8 +136,17 @@ public class Gamemanager : MonoBehaviour
         }
         if (destroyedcarcount==carcount)
         {
-            feed.text += "Game Ended, winner car:"+alivecarindex;
-            cars[alivecarindex].GetComponent<Aicontrol>().enabled = false;
+            if (alivecarindex!=carcount)
+            {
+                feed.text += "Game Ended, winner car:" + alivecarindex;
+
+                cars[alivecarindex].GetComponent<Aicontrol>().enabled = false;
+            }
+            else
+            {
+                feed.text += "Game Ended, You Win!";
+                cars[alivecarindex].GetComponent<Carcontrol>().enabled = false;
+            }
             this.enabled = false;
         }
 
@@ -126,21 +157,40 @@ public class Gamemanager : MonoBehaviour
         float multiplier = 0;
         if (speeddifference > 0)
         {
-            multiplier = 0;
+            multiplier = 1; //0
         }
         else if (speeddifference == 0)
         {
-            multiplier = Random.Range(0f, 2f);
+            multiplier = Random.Range(0f, 1.2f);  //2
         }
         else
         {
-            multiplier = 1;
+            multiplier = 0;//1
         }
-        r.AddExplosionForce(explosionpower / 2 * multiplier, collisionobj.transform.position, 10f, 0, ForceMode.Impulse);
+        //push back the car if multiplier is not 0(mean this car have lower speed than other one)
+        //r.AddExplosionForce(explosionpower / 2 * multiplier, collisionobj.transform.position, 10f, 0, ForceMode.Impulse);
+
+        if (collisionobj!=null)
+        {
+            collisionobj.GetComponent<Rigidbody>().AddForceAtPosition((collisionobj.transform.position - r.transform.position)
+             * multiplier * explosionpower, r.transform.position, ForceMode.Impulse);
+        }
+        
+
+        //collisionobj.GetComponent<Rigidbody>().AddForceAtPosition((collisionobj.transform.position-r.transform.position)
+        //    * explosionpower,r.transform.position,ForceMode.Impulse);
 
 
+        /*
         collisionobj.gameObject.GetComponent<Rigidbody>().
         AddExplosionForce(explosionpower, r.transform.position, 10f, 0, ForceMode.Impulse);
+        */
+    }
+
+
+    public void restartscene() 
+    {
+        SceneManager.LoadScene("SampleScene");
     }
 
 }

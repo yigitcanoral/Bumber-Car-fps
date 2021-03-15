@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Carcontrol : MonoBehaviour
 {
     public Gamemanager gm;
     public float speed;
+    public float currentspeed;
     public ForceMode fmodemove;
     public float rotatespeed;
     public ForceMode fmoderotate;
@@ -24,22 +26,53 @@ public class Carcontrol : MonoBehaviour
 
     public float rotatevalue;
    public bool canmove = false;
-
-
+   public float axis;
+    Vector2 startpos;
+    Vector2 endpos;
+    void Update()
+    {
+        if (Input.touchCount>0)
+        {
+            Touch t = Input.GetTouch(0);
+            if (t.phase==TouchPhase.Began)
+            {
+                startpos = new Vector2(t.position.x/(float)Screen.width,t.position.y/(float)Screen.width);
+            }
+            if (t.phase==TouchPhase.Moved)
+            {
+                endpos = new Vector2(t.position.x / (float)Screen.width, t.position.y / (float)Screen.width);
+                Vector2 a = endpos - startpos;
+                axis = a.x*5;
+                axis = Mathf.Clamp(axis,-1.0f,1.0f);
+            }
+        }
+        else
+        {
+            axis = 0;
+        }
+    }
     void FixedUpdate()
     {
         if (canmove==false)
         {
             return;
         }
+        currentspeed += Time.deltaTime * 4;
+        currentspeed = Mathf.Clamp(currentspeed,12,speed);
+
         Vector3 rot = transform.localRotation.eulerAngles;
         rot.z = Mathf.Clamp(rot.z,min,max);
-        wheelobj.transform.Rotate(0,0, Mathf.Clamp(  -Input.GetAxis("Horizontal") * rotatespeed/2,min,max));
+        wheelobj.transform.Rotate(0,0, Mathf.Clamp(  axis * rotatespeed/2,min,max));
 
 
-        //Input.GetAxis("Vertical")
-        car.AddRelativeForce(0,0, speed ,fmodemove);
-        car.AddRelativeTorque(0, (int)Input.GetAxis("Horizontal") * rotatespeed, 0,fmoderotate);
+        
+        car.AddRelativeForce(0,0, currentspeed ,fmodemove);
+        car.transform.RotateAround(this.transform.position,Vector3.up, Input.GetAxis("Horizontal") * rotatespeed);
+        car.transform.RotateAround(this.transform.position, Vector3.up, axis * rotatespeed);
+
+        //car.AddRelativeTorque(0, (int)Input.GetAxis("Horizontal") * rotatespeed, 0,fmoderotate);
+        //car.MoveRotation(Quaternion.Euler(0, Input.GetAxis("Horizontal") * rotatespeed, 0));
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             car.gameObject.transform.position = new Vector3(0,0,0);
@@ -54,20 +87,22 @@ public class Carcontrol : MonoBehaviour
         if (collision.gameObject.layer==LayerMask.NameToLayer("carcollision"))
         {
             float speeddifference = speed-collision.gameObject.GetComponent<Aicontrol>().currentspeed;
+            speeddifference = car.velocity.magnitude - collision.gameObject.GetComponent<Rigidbody>().velocity.magnitude;
+
             lasthitcarindex = collision.gameObject.GetComponent<Aicontrol>().carindex;
             hitsound.PlayOneShot(hitsound.clip);
 
             Vector3 direction = collision.transform.position - this.transform.position;
-
+            direction= (direction.normalized)/3f;
+            StartCoroutine(cameraeffect(Camera.main.transform.localPosition+ direction,false,0.3f));
            
             StartCoroutine(callcollisionfunc(speeddifference,collision.gameObject));
             //gm.collisioncalculate(speeddifference,collision.gameObject,car);
-            speed -= 5;
+            currentspeed -= 5;
 
         }
         else if (collision.gameObject.layer==LayerMask.NameToLayer("outside"))
         {
-            print("player killed");
             gm.carkilled(carindex,lasthitcarindex);
             Camera.main.transform.parent = null;
             Camera.main.transform.position = new Vector3(-20,15,0);
@@ -80,10 +115,27 @@ public class Carcontrol : MonoBehaviour
 
     IEnumerator callcollisionfunc( float speeddifference,GameObject collision) 
     {
-        yield return new WaitForSeconds(Random.Range(0,0.22f));
+        yield return new WaitForSeconds(Random.Range(0,0.1f));
         gm.collisioncalculate(speeddifference, collision.gameObject, car);
 
 
+    }
+    IEnumerator cameraeffect(Vector3 dir,bool onlyonce,float timelength)
+    {
+
+        //Vector3 campos = Camera.main.transform.localPosition;
+        float starttime = Time.time;
+
+        while (Time.time < starttime+ timelength)
+        {
+            Camera.main.transform.localPosition = Vector3.Lerp(Camera.main.transform.localPosition,dir,(Time.time-starttime)/ timelength);
+            yield return null;
+        }
+        Camera.main.transform.localPosition = dir;
+        if (onlyonce==false)
+        {
+            StartCoroutine(cameraeffect(new Vector3(0,1.2f,-0.7f), true,timelength*2f));
+        }
     }
 
 

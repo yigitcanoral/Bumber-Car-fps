@@ -29,7 +29,7 @@ public class Aicontrol : MonoBehaviour
         {
             return;
         }
-        if (target.gameObject != null)
+        if (target != null)
         {
             currentspeed += Time.deltaTime*4;
 
@@ -38,24 +38,26 @@ public class Aicontrol : MonoBehaviour
             Vector3 perp = Vector3.Cross(this.transform.forward, directiontotarget);
             float dir = Vector3.Dot(perp, Vector3.up);
 
-            
-            print(dir);
+            dir = Mathf.Clamp(dir,-1f,1f);
             if (dir > 0f)
             {
-                r.AddRelativeTorque(0, rotatespeed, 0, fm);
+                // r.AddRelativeTorque(0, rotatespeed, 0, fm);
 
             }
             else if (dir < 0f)
             {
-                r.AddRelativeTorque(0, -rotatespeed, 0, fm);
+                //r.AddRelativeTorque(0, -rotatespeed, 0, fm);
+                //r.transform.RotateAround(this.transform.position, Vector3.up, Input.GetAxis("Horizontal") * rotatespeed);
 
             }
             else
             {
             }
 
+            r.transform.RotateAround(this.transform.position, Vector3.up, dir * rotatespeed);
+
             //r.AddRelativeTorque(0, dir * rotatespeed, 0, fm);
-            
+
             r.AddRelativeForce(0, 0, currentspeed, fm);
 
         }
@@ -75,15 +77,17 @@ public class Aicontrol : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("carcollision"))
         {
             float speeddifference =0;
+            speeddifference = r.velocity.magnitude - collision.gameObject.GetComponent<Rigidbody>().velocity.magnitude;
+
             if (collision.gameObject.tag=="Player")
             {
                 lasttouchcarindex = collision.gameObject.GetComponent<Carcontrol>().carindex;
-                speeddifference = currentspeed - collision.gameObject.GetComponent<Carcontrol>().speed;// change to current speed
+               // speeddifference = currentspeed - collision.gameObject.GetComponent<Carcontrol>().speed;// change to current speed
             }
             else
             {
                 lasttouchcarindex = collision.gameObject.GetComponent<Aicontrol>().carindex;
-                speeddifference = currentspeed - collision.gameObject.GetComponent<Aicontrol>().currentspeed;
+              //  speeddifference = currentspeed - collision.gameObject.GetComponent<Aicontrol>().currentspeed;
             }
             hitsound.PlayOneShot(hitsound.clip);
             StartCoroutine(callcollisionfunc(speeddifference, collision.gameObject));
@@ -105,7 +109,7 @@ public class Aicontrol : MonoBehaviour
     }
     IEnumerator callcollisionfunc(float speeddifference, GameObject collision)
     {
-        yield return new WaitForSeconds(Random.Range(0, 0.22f));
+        yield return new WaitForSeconds(Random.Range(0, 0.1f));
         gm.collisioncalculate(speeddifference, collision.gameObject, r);
 
 

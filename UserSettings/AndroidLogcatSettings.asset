@@ -3,7 +3,7 @@
     "m_SelectedPackage": {
         "deviceId": "L2N0219927023354",
         "name": "com.DefaultCompany.fabrikagamesfpscar",
-        "processId": 19536,
+        "processId": 2178,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -30,6 +30,42 @@
             "deviceId": "L2N0219927023354",
             "name": "com.DefaultCompany.fabrikagamesfpscar",
             "processId": 19536,
+            "exited": false
+        },
+        {
+            "deviceId": "L2N0219927023354",
+            "name": "com.DefaultCompany.fabrikagamesfpscar",
+            "processId": 24685,
+            "exited": false
+        },
+        {
+            "deviceId": "L2N0219927023354",
+            "name": "com.DefaultCompany.fabrikagamesfpscar",
+            "processId": 24029,
+            "exited": false
+        },
+        {
+            "deviceId": "L2N0219927023354",
+            "name": "com.DefaultCompany.fabrikagamesfpscar",
+            "processId": 26140,
+            "exited": false
+        },
+        {
+            "deviceId": "L2N0219927023354",
+            "name": "com.DefaultCompany.fabrikagamesfpscar",
+            "processId": 29783,
+            "exited": false
+        },
+        {
+            "deviceId": "L2N0219927023354",
+            "name": "com.DefaultCompany.fabrikagamesfpscar",
+            "processId": 32100,
+            "exited": false
+        },
+        {
+            "deviceId": "L2N0219927023354",
+            "name": "com.DefaultCompany.fabrikagamesfpscar",
+            "processId": 2178,
             "exited": false
         }
     ],
