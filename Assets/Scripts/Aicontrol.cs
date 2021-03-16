@@ -31,7 +31,7 @@ public class Aicontrol : MonoBehaviour
         }
         if (target != null)
         {
-            currentspeed += Time.deltaTime*4;
+            currentspeed += Time.deltaTime*3;
 
             currentspeed = Mathf.Clamp(currentspeed,12,speed);
             Vector3 directiontotarget = target.transform.position - this.transform.position;
@@ -39,20 +39,6 @@ public class Aicontrol : MonoBehaviour
             float dir = Vector3.Dot(perp, Vector3.up);
 
             dir = Mathf.Clamp(dir,-1f,1f);
-            if (dir > 0f)
-            {
-                // r.AddRelativeTorque(0, rotatespeed, 0, fm);
-
-            }
-            else if (dir < 0f)
-            {
-                //r.AddRelativeTorque(0, -rotatespeed, 0, fm);
-                //r.transform.RotateAround(this.transform.position, Vector3.up, Input.GetAxis("Horizontal") * rotatespeed);
-
-            }
-            else
-            {
-            }
 
             r.transform.RotateAround(this.transform.position, Vector3.up, dir * rotatespeed);
 
@@ -91,8 +77,6 @@ public class Aicontrol : MonoBehaviour
             }
             hitsound.PlayOneShot(hitsound.clip);
             StartCoroutine(callcollisionfunc(speeddifference, collision.gameObject));
-
-            //gm.collisioncalculate(speeddifference,collision.gameObject,r);
             
 
         }

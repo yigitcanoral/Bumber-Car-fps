@@ -28,8 +28,11 @@ public class Carcontrol : MonoBehaviour
    public float axis;
     Vector2 startpos;
     Vector2 endpos;
+
+    public float veloci;
     void Update()
     {
+        veloci = car.velocity.magnitude;
         if (Input.touchCount>0)
         {
             Touch t = Input.GetTouch(0);
@@ -56,13 +59,15 @@ public class Carcontrol : MonoBehaviour
         {
             return;
         }
-        currentspeed += Time.deltaTime * 4;
+        currentspeed += Time.deltaTime * 3;
         currentspeed = Mathf.Clamp(currentspeed,12,speed);
 
         wheelobj.transform.localRotation=Quaternion.Euler(0,0, Mathf.Clamp(  -axis * wheelrotatespeed*10, -maxwheelangle, maxwheelangle));
         // wheelobj.transform.Rotate(0, 0, Mathf.Clamp(-Input.GetAxis("Horizontal") * rotatespeed, min, max));
 
-        Camera.main.fieldOfView = Mathf.Clamp(55+currentspeed,55,70);
+        //Camera.main.fieldOfView = Mathf.Clamp(55+currentspeed,55,70);
+        Camera.main.fieldOfView = 55 + currentspeed;
+
 
         car.AddRelativeForce(0,0, currentspeed ,fmodemove);
         car.transform.RotateAround(this.transform.position,Vector3.up, Input.GetAxis("Horizontal") * rotatespeed);
@@ -90,13 +95,12 @@ public class Carcontrol : MonoBehaviour
             lasthitcarindex = collision.gameObject.GetComponent<Aicontrol>().carindex;
             hitsound.PlayOneShot(hitsound.clip);
 
-            Vector3 direction = collision.transform.position - this.transform.position;
-            direction= (direction.normalized)/3f;
+            Vector3 direction = collision.transform.position - Camera.main.transform.position;
+            direction= (direction.normalized)/4f;
             StartCoroutine(cameraeffect(Camera.main.transform.localPosition+ direction,false,0.3f));
            
             StartCoroutine(callcollisionfunc(speeddifference,collision.gameObject));
             
-
         }
         else if (collision.gameObject.layer==LayerMask.NameToLayer("outside"))
         {
@@ -107,7 +111,6 @@ public class Carcontrol : MonoBehaviour
             Destroy(this.transform.gameObject);
             this.enabled = false;
         }
-
     }
 
     IEnumerator callcollisionfunc( float speeddifference,GameObject collision) 
@@ -119,10 +122,7 @@ public class Carcontrol : MonoBehaviour
     }
     IEnumerator cameraeffect(Vector3 dir,bool onlyonce,float timelength)
     {
-
-        //Vector3 campos = Camera.main.transform.localPosition;
         float starttime = Time.time;
-
         while (Time.time < starttime+ timelength)
         {
             Camera.main.transform.localPosition = Vector3.Slerp(Camera.main.transform.localPosition,dir,(Time.time-starttime)/ timelength);

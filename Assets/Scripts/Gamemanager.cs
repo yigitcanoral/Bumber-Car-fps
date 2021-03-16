@@ -161,19 +161,27 @@ public class Gamemanager : MonoBehaviour
         }
         else if (speeddifference == 0)
         {
-            multiplier = Random.Range(1f, 1.2f);  //2
+            multiplier = Random.Range(0.6f, 1.2f);  //2
         }
         else
         {
-            multiplier = 0;//1
+            multiplier = 0.2f;//1
         }
         //push back the car if multiplier is not 0(mean this car have lower speed than other one)
         //r.AddExplosionForce(explosionpower / 2 * multiplier, collisionobj.transform.position, 10f, 0, ForceMode.Impulse);
 
         if (collisionobj!=null)
         {
+
+            
+         collisionobj.GetComponent<Rigidbody>().AddForceAtPosition((collisionobj.transform.position - r.transform.position)
+          * multiplier * explosionpower, r.transform.position, ForceMode.Impulse);
+              /* 
+            multiplier = Mathf.Clamp(r.velocity.magnitude,0,8f);
             collisionobj.GetComponent<Rigidbody>().AddForceAtPosition((collisionobj.transform.position - r.transform.position)
-             * multiplier * explosionpower, r.transform.position, ForceMode.Impulse);
+    * multiplier , r.transform.position, ForceMode.Impulse);
+
+            */
         }
         
 
