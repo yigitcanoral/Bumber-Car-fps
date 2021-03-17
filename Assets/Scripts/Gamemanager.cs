@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
                   
 public class Gamemanager : MonoBehaviour
 {
+    public bool showpfs;
     public GameObject playercar;
     public int carcount;
     public bool StartWithRandomCarCount;
@@ -32,7 +33,11 @@ public class Gamemanager : MonoBehaviour
         }
         cars = new GameObject[carcount+1];
         alivecars = new bool[carcount+1];
-        InvokeRepeating("checkfps", 0.2f,0.2f);
+        if (showpfs==true)
+        {
+            InvokeRepeating("checkfps", 0.2f, 0.2f);
+
+        }
         float angletospawn = 0;
         GameObject spawnmanager= new GameObject();
         for (int i = 0; i < carcount; i++)
@@ -158,10 +163,12 @@ public class Gamemanager : MonoBehaviour
         if (speeddifference > 0)
         {
             multiplier = 1; //0
+            multiplier += Mathf.Clamp(speeddifference,0f,0.5f);
         }
         else if (speeddifference == 0)
         {
             multiplier = Random.Range(0.6f, 1.2f);  //2
+            print("same difference");
         }
         else
         {
@@ -183,16 +190,7 @@ public class Gamemanager : MonoBehaviour
 
             */
         }
-        
 
-        //collisionobj.GetComponent<Rigidbody>().AddForceAtPosition((collisionobj.transform.position-r.transform.position)
-        //    * explosionpower,r.transform.position,ForceMode.Impulse);
-
-
-        /*
-        collisionobj.gameObject.GetComponent<Rigidbody>().
-        AddExplosionForce(explosionpower, r.transform.position, 10f, 0, ForceMode.Impulse);
-        */
     }
 
 

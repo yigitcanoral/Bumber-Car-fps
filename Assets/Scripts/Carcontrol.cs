@@ -29,10 +29,11 @@ public class Carcontrol : MonoBehaviour
     Vector2 startpos;
     Vector2 endpos;
 
-    public float veloci;
+
+    public float fovchangespeed;
     void Update()
     {
-        veloci = car.velocity.magnitude;
+
         if (Input.touchCount>0)
         {
             Touch t = Input.GetTouch(0);
@@ -65,8 +66,8 @@ public class Carcontrol : MonoBehaviour
         wheelobj.transform.localRotation=Quaternion.Euler(0,0, Mathf.Clamp(  -axis * wheelrotatespeed*10, -maxwheelangle, maxwheelangle));
         // wheelobj.transform.Rotate(0, 0, Mathf.Clamp(-Input.GetAxis("Horizontal") * rotatespeed, min, max));
 
-        //Camera.main.fieldOfView = Mathf.Clamp(55+currentspeed,55,70);
-        Camera.main.fieldOfView = 55 + currentspeed;
+        fovchangespeed += Time.deltaTime*5;
+        Camera.main.fieldOfView = 55 + Mathf.Clamp(fovchangespeed,0f,20f);
 
 
         car.AddRelativeForce(0,0, currentspeed ,fmodemove);
@@ -118,6 +119,7 @@ public class Carcontrol : MonoBehaviour
         yield return new WaitForSeconds(Random.Range(0,0.1f));
         gm.collisioncalculate(speeddifference, collision.gameObject, car);
         currentspeed -= 10;
+        fovchangespeed = 0;
 
     }
     IEnumerator cameraeffect(Vector3 dir,bool onlyonce,float timelength)
